@@ -1,36 +1,48 @@
 body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f3f3f3;
-    margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #2e2e2e;
+  color: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
 }
 
-.calculator {
-    width: 200px;
-    padding: 20px;
-    background-color: #333;
-    border-radius: 8px;
+.container {
+  display: flex;
+  gap: 20px;
 }
 
-#display {
-    width: 100%;
-    height: 40px;
-    font-size: 18px;
-    text-align: right;
-    margin-bottom: 10px;
-    padding: 10px;
+.menu, .summary {
+  background-color: #444;
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
 }
 
-.buttons {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 5px;
+h2 {
+  text-align: center;
+}
+
+.items, .discounts {
+  margin-top: 15px;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
 }
 
 button {
-    padding: 15px;
-    font-size: 18px;
-    cursor: pointer;
+  background-color: #777;
+  color: white;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #555;
 }
