@@ -13,58 +13,6 @@
         .submit-button:hover {
             background-color: #45a049 !important;
         }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background-color: #3a3a3a;
-            padding: 20px;
-            border-radius: 8px;
-            max-width: 400px;
-            width: 90%;
-        }
-
-        .modal input {
-            width: 100%;
-            padding: 8px;
-            margin: 10px 0;
-            background-color: #444;
-            border: 1px solid #555;
-            color: white;
-            border-radius: 4px;
-        }
-
-        .modal-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 15px;
-        }
-
-        .modal-buttons button {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .modal-buttons .cancel {
-            background-color: #666;
-        }
-
-        .modal-buttons .submit {
-            background-color: #4CAF50;
-        }
     </style>
 </head>
 <body>
@@ -72,38 +20,18 @@
     <div class="order-actions">
         <button onclick="clearOrder()">Clear Order</button>
         <button onclick="saveAsFavorite()">Save as Favorite</button>
-        <button onclick="showSubmitModal()" class="submit-button">Submit Order</button>
-    </div>
-
-    <!-- Add Modal for Discord Webhook URL -->
-    <div id="webhookModal" class="modal">
-        <div class="modal-content">
-            <h3>Submit Order to Discord</h3>
-            <input type="text" id="webhookUrl" placeholder="Enter Discord Webhook URL">
-            <div class="modal-buttons">
-                <button onclick="closeModal()" class="cancel">Cancel</button>
-                <button onclick="submitOrder()" class="submit">Submit</button>
-            </div>
-        </div>
+        <button onclick="submitOrder()" class="submit-button">Submit Order</button>
     </div>
 
     <script>
+        // Add your Discord webhook URL here
+        const DISCORD_WEBHOOK_URL = 'YOUR_DISCORD_WEBHOOK_URL_HERE';
+        
         // Previous JavaScript code remains the same
 
-        function showSubmitModal() {
-            const modal = document.getElementById('webhookModal');
-            modal.style.display = 'flex';
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('webhookModal');
-            modal.style.display = 'none';
-        }
-
         function submitOrder() {
-            const webhookUrl = document.getElementById('webhookUrl').value.trim();
-            if (!webhookUrl) {
-                alert('Please enter a Discord webhook URL');
+            if (Object.keys(order).length === 0) {
+                alert('Please add items to your order first');
                 return;
             }
 
@@ -132,22 +60,25 @@
             // Prepare Discord embed
             const embed = {
                 embeds: [{
-                    title: 'New Order Received',
+                    title: '🛒 New Order Received',
                     description: orderDetails,
                     color: 3066993, // Green color
                     fields: [
                         {
-                            name: 'Total Amount',
+                            name: '💰 Total Amount',
                             value: `$${total.toFixed(2)}`,
                             inline: true
                         }
                     ],
-                    timestamp: new Date().toISOString()
+                    timestamp: new Date().toISOString(),
+                    footer: {
+                        text: 'Order System'
+                    }
                 }]
             };
 
             // Send to Discord
-            fetch(webhookUrl, {
+            fetch(DISCORD_WEBHOOK_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,7 +89,6 @@
                 if (response.ok) {
                     alert('Order submitted successfully!');
                     clearOrder();
-                    closeModal();
                 } else {
                     throw new Error('Failed to submit order');
                 }
