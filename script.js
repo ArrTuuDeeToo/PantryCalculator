@@ -1,21 +1,25 @@
-function appendCharacter(char) {
-    document.getElementById("display").value += char;
+let subtotal = 0;
+let discount = 1;
+
+function addItem(itemName, itemPrice) {
+  subtotal += itemPrice * discount;
+  updateOrderList(itemName, itemPrice);
+  updateSubtotal();
 }
 
-function clearDisplay() {
-    document.getElementById("display").value = "";
+function updateOrderList(itemName, itemPrice) {
+  const orderList = document.getElementById("orderList");
+  const listItem = document.createElement("li");
+  listItem.textContent = `${itemName} - $${itemPrice}`;
+  orderList.appendChild(listItem);
 }
 
-function deleteLast() {
-    let display = document.getElementById("display");
-    display.value = display.value.slice(0, -1);
+function updateSubtotal() {
+  document.getElementById("subtotal").textContent = subtotal.toFixed(2);
 }
 
-function calculate() {
-    try {
-        let display = document.getElementById("display");
-        display.value = eval(display.value);
-    } catch {
-        display.value = "Error";
-    }
+function applyDiscount(rate) {
+  discount = 1 - rate;
+  subtotal *= discount;
+  updateSubtotal();
 }
