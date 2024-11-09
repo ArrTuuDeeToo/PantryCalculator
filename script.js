@@ -140,4 +140,16 @@ function applyDiscount(rate) {
         order[itemName].totalPrice *= discount;
     }
     updateOrderSummary();
+   function saveAsFavorite() {
+  if (Object.keys(order).length) {
+    const newFavorite = {
+      name: orderName,
+      items: order
+    };
+    favorites.push(newFavorite);
+    localStorage.setItem('favorites', JSON.stringify(favorites));
+    updateFavorites();
+    postOrderToDiscord(order);
+  }
 }
+
