@@ -21,14 +21,13 @@
             gap: 20px;
         }
 
-        /* Swap the widths here */
         .left-panel {
-            flex: 2; /* Wider than the right side */
+            flex: 2;
             min-width: 400px;
         }
 
         .right-panel {
-            flex: 1; /* Narrower than the left side */
+            flex: 1;
             min-width: 300px;
         }
 
@@ -37,7 +36,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 10px; /* Tiny gap between cards */
+            margin-bottom: 10px;
         }
 
         .card h3 {
@@ -64,7 +63,7 @@
             gap: 10px;
             flex: 1 1 45%;
             max-width: 400px;
-            margin-bottom: 5px; /* Tiny gap between items */
+            margin-bottom: 5px;
         }
 
         .item-name {
@@ -101,7 +100,7 @@
             border-radius: 6px;
             justify-content: center;
             align-items: center;
-            margin-bottom: 10px; /* Tiny gap above discount options */
+            margin-bottom: 10px;
         }
 
         .discount-options label {
@@ -286,35 +285,54 @@
         }
 
         function saveAsFavorite() {
-            if (Object.keys(order).length) {
-                favorites.push({ ...order });
-                localStorage.setItem('favorites', JSON.stringify(favorites));
-                updateFavorites();
+            if (Object.keys(order).length === 0) {
+                alert("Please add items to
+        const favoriteName = prompt("Enter a name for this favorite order:", "My Favorite Order");
+        if (!favoriteName) return;
+
+        const favoriteOrder = {
+            name: favoriteName,
+            items: { ...order },
+            discounts: {
+                discount50: document.getElementById("discount50").checked,
+                discount5: document.getElementById("discount5").checked
             }
+        };
+
+        favorites.push(favoriteOrder);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateFavorites();
+    }
+
+    function loadFavorite(index) {
+        const favorite = favorites[index];
+        order = { ...favorite.items };
+        document.getElementById("discount50").checked = favorite.discounts.discount50;
+        document.getElementById("discount5").checked = favorite.discounts.discount5;
+        updateOrderSummary();
+    }
+
+    function deleteFavorite(index) {
+        favorites.splice(index, 1);
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateFavorites();
+    }
+
+    function updateFavorites() {
+        const favoritesList = document.getElementById("favorites-list");
+        if (favorites.length === 0) {
+            favoritesList.innerHTML = "No favorite orders saved";
+            return;
         }
 
-        function updateFavorites() {
-            const favoritesList = document.getElementById("favorites-list");
-            if (!favorites.length) {
-                favoritesList.innerHTML = "No favorite orders saved";
-            } else {
-                favoritesList.innerHTML = favorites
-                    .map(
-                        (fav, i) => `
-                        <div class="favorite-item">
-                            <span>Favorite ${i + 1}</span>
-                            <button onclick="loadFavorite(${i})">Load</button>
-                        </div>
-                    `
-                    )
-                    .join("");
-            }
-        }
-
-        function loadFavorite(index) {
-            order = { ...favorites[index] };
-            updateOrderSummary();
-        }
-    </script>
-</body>
-</html>
+        favoritesList.innerHTML = favorites.map((favorite, index) => `
+            <div class="favorite-item">
+                <span>${favorite.name}</span>
+                <div>
+                    <button onclick="loadFavorite(${index})">Load</button>
+                    <button onclick="deleteFavorite(${index})">Delete</button>
+                </div>
+            </div>
+        `).join('');
+    }
+</script>
