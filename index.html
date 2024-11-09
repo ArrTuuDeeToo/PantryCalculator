@@ -6,143 +6,105 @@
     <title>Item Order Summary</title>
     <style>
         /* Previous styles remain the same */
-        /* Adding new styles for webhook setup and place order button */
-        .webhook-setup {
-            margin-bottom: 10px;
+        
+        .submit-order {
+            background-color: #5865F2 !important; /* Discord blue */
+            color: white;
+            font-weight: bold;
+        }
+
+        .submit-order:hover {
+            background-color: #4752C4 !important;
+        }
+
+        #webhook-setup {
+            margin-top: 10px;
             padding: 10px;
             background-color: #444;
             border-radius: 6px;
         }
 
-        .webhook-setup input {
+        #webhook-setup input {
             width: 100%;
             padding: 8px;
-            margin: 5px 0;
-            background: #555;
+            margin-top: 5px;
+            background-color: #555;
             border: 1px solid #666;
             color: white;
             border-radius: 4px;
         }
 
-        .place-order-button {
-            background-color: #43b581 !important;
-            width: 100%;
-            margin-top: 10px;
+        .error-message {
+            color: #ff6b6b;
+            margin-top: 5px;
+            font-size: 0.9em;
         }
-
-        .place-order-button:hover {
-            background-color: #3ca374 !important;
-        }
-
-        /* Rest of the previous styles... */
-        /* (Include all previous CSS here - I'm truncating for brevity but you should keep all previous styles) */
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Left Panel: Item Menu -->
-        <div class="left-panel">
-            <!-- Previous left panel content... -->
-            <!-- (Keep all previous left panel HTML) -->
-        </div>
+    <!-- Previous HTML remains the same until the order-actions div -->
+    
+    <!-- In the order-actions div, add the submit button -->
+    <div class="order-actions">
+        <button onclick="clearOrder()">Clear Order</button>
+        <button onclick="saveAsFavorite()">Save as Favorite</button>
+        <button onclick="submitOrder()" class="submit-order">Submit to Discord</button>
+    </div>
 
-        <!-- Right Panel -->
-        <div class="right-panel">
-            <!-- Webhook Setup -->
-            <div class="card">
-                <h3>Discord Webhook Setup</h3>
-                <div class="webhook-setup">
-                    <input 
-                        type="text" 
-                        id="webhook-url" 
-                        placeholder="Enter Discord Webhook URL"
-                        onchange="saveWebhookUrl(this.value)"
-                    >
-                </div>
-            </div>
-
-            <!-- Previous right panel content... -->
-            <!-- (Keep all previous right panel HTML) -->
-
-            <!-- Modified Order Summary card -->
-            <div class="card" id="order-summary">
-                <h3>Order Summary</h3>
-                <div id="order-list">No items added</div>
-                <p class="subtotal">Subtotal: $<span id="subtotal">0.00</span></p>
-                <div class="order-actions">
-                    <button onclick="clearOrder()">Clear Order</button>
-                    <button onclick="saveAsFavorite()">Save as Favorite</button>
-                </div>
-                <button onclick="placeOrder()" class="place-order-button">Place Order</button>
-            </div>
-        </div>
+    <!-- Add webhook setup section -->
+    <div id="webhook-setup">
+        <label for="webhook-url">Discord Webhook URL:</label>
+        <input type="text" id="webhook-url" placeholder="Enter your Discord webhook URL">
     </div>
 
     <script>
-        // Previous variables
-        let order = {};
-        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
-        favorites = favorites.map((fav, i) => ({
-            ...fav,
-            name: fav.name || `Favorite ${i + 1}`
-        }));
+        // Previous JavaScript code remains the same
 
-        // Add webhook URL storage
-        let webhookUrl = localStorage.getItem('discord-webhook-url') || '';
-        
-        // Initialize webhook input
-        document.getElementById('webhook-url').value = webhookUrl;
-
-        function saveWebhookUrl(url) {
-            webhookUrl = url;
-            localStorage.setItem('discord-webhook-url', url);
-        }
-
-        // Function to send order to Discord
-        async function sendToDiscord(orderSummary) {
+        // Add new function to submit order to Discord
+        async function submitOrder() {
+            const webhookUrl = document.getElementById('webhook-url').value.trim();
+            
             if (!webhookUrl) {
-                alert('Please set up your Discord webhook URL first!');
-                return false;
+                alert('https://discord.com/api/webhooks/1304933522385010699/_L8gMHmG8VFshVgB4zrINZoX6srFfeoSy7XAtCQS4vhpfJW-Ax2GsbH24UFKCQE4iShy');
+                return;
             }
 
-            const embed = {
-                title: "New Order Received",
-                color: 3447003, // Discord blue color
-                fields: [],
-                timestamp: new Date().toISOString()
-            };
-
-            // Add items to embed
-            for (let itemName in order) {
-                const item = order[itemName];
-                embed.fields.push({
-                    name: itemName,
-                    value: `Quantity: ${item.quantity}\nPrice: $${item.totalPrice.toFixed(2)}`,
-                    inline: true
-                });
+            if (Object.keys(order).length === 0) {
+                alert('Please add items to your order first');
+                return;
             }
 
-            // Add total
             const discount50 = document.getElementById("discount50").checked;
             const discount5 = document.getElementById("discount5").checked;
-            let total = Object.values(order).reduce((sum, item) => sum + item.totalPrice, 0);
-            if (discount50) total *= 0.5;
-            else if (discount5) total *= 0.95;
 
-            embed.fields.push({
-                name: "Total",
-                value: `$${total.toFixed(2)}`,
-                inline: false
-            });
+            // Calculate total
+            let subtotal = Object.values(order).reduce((sum, item) => sum + item.totalPrice, 0);
+            if (discount50) subtotal *= 0.5;
+            else if (discount5) subtotal *= 0.95;
 
-            // Add applied discounts if any
-            if (discount50 || discount5) {
-                embed.fields.push({
-                    name: "Applied Discount",
-                    value: discount50 ? "50% Off" : "5% Off",
-                    inline: false
-                });
-            }
+            // Create order summary
+            let orderSummary = Object.entries(order).map(([itemName, item]) => 
+                `${item.quantity}x ${itemName} - $${item.totalPrice.toFixed(2)}`
+            ).join('\n');
+
+            // Create Discord message
+            const message = {
+                embeds: [{
+                    title: '🛒 New Order Received',
+                    color: 0x5865F2,
+                    fields: [
+                        {
+                            name: '📋 Order Details',
+                            value: orderSummary
+                        },
+                        {
+                            name: '💰 Total',
+                            value: `$${subtotal.toFixed(2)}${discount50 ? ' (50% discount applied)' : discount5 ? ' (5% discount applied)' : ''}`
+                        }
+                    ],
+                    timestamp: new Date().toISOString()
+                }]
+            };
 
             try {
                 const response = await fetch(webhookUrl, {
@@ -150,39 +112,20 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        embeds: [embed]
-                    })
+                    body: JSON.stringify(message)
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                if (response.ok) {
+                    alert('Order submitted successfully!');
+                    clearOrder(); // Clear the order after successful submission
+                } else {
+                    throw new Error('Failed to submit order');
                 }
-                return true;
             } catch (error) {
-                console.error('Error sending to Discord:', error);
-                alert('Failed to send order to Discord. Please check your webhook URL and try again.');
-                return false;
+                alert('Error submitting order. Please check your webhook URL and try again.');
+                console.error('Error:', error);
             }
         }
-
-        // New function to place order
-        async function placeOrder() {
-            if (Object.keys(order).length === 0) {
-                alert('Please add items to your order first!');
-                return;
-            }
-
-            const success = await sendToDiscord(order);
-            if (success) {
-                alert('Order successfully sent to Discord!');
-                clearOrder();
-            }
-        }
-
-        // Previous functions...
-        // (Keep all previous JavaScript functions - they remain unchanged)
-
     </script>
 </body>
 </html>
