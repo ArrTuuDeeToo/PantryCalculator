@@ -6,125 +6,166 @@
     <title>Item Order Summary</title>
     <style>
         /* Previous styles remain the same */
-        
-        .submit-order {
-            background-color: #5865F2 !important; /* Discord blue */
-            color: white;
-            font-weight: bold;
+        .submit-button {
+            background-color: #4CAF50 !important;
         }
 
-        .submit-order:hover {
-            background-color: #4752C4 !important;
+        .submit-button:hover {
+            background-color: #45a049 !important;
         }
 
-        #webhook-setup {
-            margin-top: 10px;
-            padding: 10px;
-            background-color: #444;
-            border-radius: 6px;
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
         }
 
-        #webhook-setup input {
+        .modal-content {
+            background-color: #3a3a3a;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal input {
             width: 100%;
             padding: 8px;
-            margin-top: 5px;
-            background-color: #555;
-            border: 1px solid #666;
+            margin: 10px 0;
+            background-color: #444;
+            border: 1px solid #555;
             color: white;
             border-radius: 4px;
         }
 
-        .error-message {
-            color: #ff6b6b;
-            margin-top: 5px;
-            font-size: 0.9em;
+        .modal-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .modal-buttons button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .modal-buttons .cancel {
+            background-color: #666;
+        }
+
+        .modal-buttons .submit {
+            background-color: #4CAF50;
         }
     </style>
 </head>
 <body>
-    <!-- Previous HTML remains the same until the order-actions div -->
-    
-    <!-- In the order-actions div, add the submit button -->
+    <!-- Previous HTML content remains the same until the order-actions div -->
     <div class="order-actions">
         <button onclick="clearOrder()">Clear Order</button>
         <button onclick="saveAsFavorite()">Save as Favorite</button>
-        <button onclick="submitOrder()" class="submit-order">Submit to Discord</button>
+        <button onclick="showSubmitModal()" class="submit-button">Submit Order</button>
     </div>
 
-    <!-- Add webhook setup section -->
-    <div id="webhook-setup">
-        <label for="webhook-url">Discord Webhook URL:</label>
-        <input type="text" id="webhook-url" placeholder="Enter your Discord webhook URL">
+    <!-- Add Modal for Discord Webhook URL -->
+    <div id="webhookModal" class="modal">
+        <div class="modal-content">
+            <h3>Submit Order to Discord</h3>
+            <input type="text" id="webhookUrl" placeholder="Enter Discord Webhook URL">
+            <div class="modal-buttons">
+                <button onclick="closeModal()" class="cancel">Cancel</button>
+                <button onclick="submitOrder()" class="submit">Submit</button>
+            </div>
+        </div>
     </div>
 
     <script>
         // Previous JavaScript code remains the same
 
-        // Add new function to submit order to Discord
-        async function submitOrder() {
-            const webhookUrl = document.getElementById('webhook-url').value.trim();
-            
+        function showSubmitModal() {
+            const modal = document.getElementById('webhookModal');
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('webhookModal');
+            modal.style.display = 'none';
+        }
+
+        function submitOrder() {
+            const webhookUrl = document.getElementById('webhookUrl').value.trim();
             if (!webhookUrl) {
-                alert('https://discord.com/api/webhooks/1304933522385010699/_L8gMHmG8VFshVgB4zrINZoX6srFfeoSy7XAtCQS4vhpfJW-Ax2GsbH24UFKCQE4iShy');
+                alert('Please enter a Discord webhook URL');
                 return;
             }
 
-            if (Object.keys(order).length === 0) {
-                alert('Please add items to your order first');
-                return;
+            // Prepare order details
+            let orderDetails = '';
+            let total = 0;
+            
+            for (let itemName in order) {
+                const item = order[itemName];
+                total += item.totalPrice;
+                orderDetails += `${item.quantity}x ${itemName} - $${item.totalPrice.toFixed(2)}\n`;
             }
 
+            // Apply discounts
             const discount50 = document.getElementById("discount50").checked;
             const discount5 = document.getElementById("discount5").checked;
+            
+            if (discount50) {
+                total *= 0.5;
+                orderDetails += '\nApplied: 50% Discount';
+            } else if (discount5) {
+                total *= 0.95;
+                orderDetails += '\nApplied: 5% Discount';
+            }
 
-            // Calculate total
-            let subtotal = Object.values(order).reduce((sum, item) => sum + item.totalPrice, 0);
-            if (discount50) subtotal *= 0.5;
-            else if (discount5) subtotal *= 0.95;
-
-            // Create order summary
-            let orderSummary = Object.entries(order).map(([itemName, item]) => 
-                `${item.quantity}x ${itemName} - $${item.totalPrice.toFixed(2)}`
-            ).join('\n');
-
-            // Create Discord message
-            const message = {
+            // Prepare Discord embed
+            const embed = {
                 embeds: [{
-                    title: '🛒 New Order Received',
-                    color: 0x5865F2,
+                    title: 'New Order Received',
+                    description: orderDetails,
+                    color: 3066993, // Green color
                     fields: [
                         {
-                            name: '📋 Order Details',
-                            value: orderSummary
-                        },
-                        {
-                            name: '💰 Total',
-                            value: `$${subtotal.toFixed(2)}${discount50 ? ' (50% discount applied)' : discount5 ? ' (5% discount applied)' : ''}`
+                            name: 'Total Amount',
+                            value: `$${total.toFixed(2)}`,
+                            inline: true
                         }
                     ],
                     timestamp: new Date().toISOString()
                 }]
             };
 
-            try {
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(message)
-                });
-
+            // Send to Discord
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(embed)
+            })
+            .then(response => {
                 if (response.ok) {
                     alert('Order submitted successfully!');
-                    clearOrder(); // Clear the order after successful submission
+                    clearOrder();
+                    closeModal();
                 } else {
                     throw new Error('Failed to submit order');
                 }
-            } catch (error) {
-                alert('Error submitting order. Please check your webhook URL and try again.');
-                console.error('Error:', error);
-            }
+            })
+            .catch(error => {
+                alert('Error submitting order: ' + error.message);
+            });
         }
     </script>
 </body>
