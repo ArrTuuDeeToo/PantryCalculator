@@ -380,6 +380,7 @@
     <div class="order-actions">
         <button onclick="clearOrder()">Clear Order 🚮</button>
         <button onclick="saveAsFavorite()">Save as Favorite ⭐️</button>
+        <button onclick="completeOrder()">Complete Order 🎉</button>
     </div>
 </div>
         </div>
@@ -509,6 +510,31 @@
             delete order.name; // Remove the name property from the loaded order
             updateOrderSummary();
         }
+        function completeOrder() {
+        const orderSummary = document.getElementById("order-list");
+        const orderName = document.getElementById("order-name").value;
+        const subtotal = document.getElementById("subtotal").textContent;
+
+        const orderData = {
+            "content": `**Order Summary**\n${orderName}\n\n${orderSummary.innerHTML}\n\n**Subtotal:** $${subtotal}`,
+            "username": "Order Bot",
+            "avatar_url": "https://example.com/avatar.png"
+        };
+
+        fetch('https://discord.com/api/webhooks/1304933522385010699/_L8gMHmG8VFshVgB4zrINZoX6srFfeoSy7XAtCQS4vhpfJW-Ax2GsbH24UFKCQE4iShy', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(orderData)
+        })
+       .then(response => response.json())
+       .then(data => console.log(data))
+       .catch(error => console.error(error));
+
+        clearOrder();
+    }
+
     </script>
 </body>
 </html>
