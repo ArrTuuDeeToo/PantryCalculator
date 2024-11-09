@@ -1,35 +1,39 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simple Calculator</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jewelry Menu Calculator</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="calculator">
-        <input type="text" id="display" readonly>
-        <div class="buttons">
-            <button onclick="clearDisplay()">C</button>
-            <button onclick="deleteLast()">DEL</button>
-            <button onclick="appendCharacter('/')">/</button>
-            <button onclick="appendCharacter('*')">*</button>
-            <button onclick="appendCharacter('7')">7</button>
-            <button onclick="appendCharacter('8')">8</button>
-            <button onclick="appendCharacter('9')">9</button>
-            <button onclick="appendCharacter('-')">-</button>
-            <button onclick="appendCharacter('4')">4</button>
-            <button onclick="appendCharacter('5')">5</button>
-            <button onclick="appendCharacter('6')">6</button>
-            <button onclick="appendCharacter('+')">+</button>
-            <button onclick="appendCharacter('1')">1</button>
-            <button onclick="appendCharacter('2')">2</button>
-            <button onclick="appendCharacter('3')">3</button>
-            <button onclick="calculate()">=</button>
-            <button onclick="appendCharacter('0')">0</button>
-            <button onclick="appendCharacter('.')">.</button>
+  <div class="container">
+    <div class="menu">
+      <h2>Jewelry Menu</h2>
+      <div class="items">
+        <div class="item">
+          <span>Opal T1 - $45</span>
+          <button onclick="addItem('Opal T1', 45)">Add</button>
         </div>
+        <div class="item">
+          <span>Citrine T1 - $90</span>
+          <button onclick="addItem('Citrine T1', 90)">Add</button>
+        </div>
+        <!-- Add more items as needed -->
+      </div>
+      <div class="discounts">
+        <input type="checkbox" id="discount50" onclick="applyDiscount(0.5)">
+        <label for="discount50">50% Discount</label><br>
+        <input type="checkbox" id="discount5" onclick="applyDiscount(0.05)">
+        <label for="discount5">5% Discount</label><br>
+      </div>
     </div>
-    <script src="script.js"></script>
+    <div class="summary">
+      <h2>Order Summary</h2>
+      <ul id="orderList"></ul>
+      <h3>Subtotal: $<span id="subtotal">0</span></h3>
+    </div>
+  </div>
+  <script src="script.js"></script>
 </body>
 </html>
