@@ -238,18 +238,25 @@
     </div>
 
     <script>
+        // Initialize order and favorites
         let order = {};
         let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
 
+        // Update favorites on load
         updateFavorites();
 
         function addItem(name, price, quantity) {
-            if (order[name]) {
-                order[name].quantity += quantity;
-                order[name].totalPrice += price * quantity;
-            } else {
-                order[name] = { quantity: quantity, totalPrice: price * quantity, price: price };
+            if (!order[name]) {
+                order[name] = {
+                    quantity: 0,
+                    price: price,
+                    totalPrice: 0
+                };
             }
+            
+            order[name].quantity += quantity;
+            order[name].totalPrice = order[name].quantity * price;
+            
             updateOrderSummary();
         }
 
@@ -259,23 +266,31 @@
             const discount50 = document.getElementById("discount50").checked;
             const discount5 = document.getElementById("discount5").checked;
 
-            orderList.innerHTML = "";
             let subtotal = 0;
-            let orderSummaryText = "";
+            let orderItems = [];
 
-            for (let itemName in order) {
-                let item = order[itemName];
-                subtotal += item.totalPrice;
-                orderSummaryText += `<li>${item.quantity}x ${itemName} - $${item.totalPrice.toFixed(2)}</li>`;
+            // Calculate subtotal and create order items list
+            for (const [itemName, item] of Object.entries(order)) {
+                if (item.quantity > 0) {
+                    subtotal += item.totalPrice;
+                    orderItems.push(`<li>${item.quantity}x ${itemName} - $${item.totalPrice.toFixed(2)}</li>`);
+                }
             }
 
+            // Apply discounts
             if (discount50) {
                 subtotal *= 0.5;
             } else if (discount5) {
                 subtotal *= 0.95;
             }
 
-            orderList.innerHTML = Object.keys(order).length ? `<ul>${orderSummaryText}</ul>` : "No items added";
+            // Update the display
+            if (orderItems.length > 0) {
+                orderList.innerHTML = `<ul>${orderItems.join('')}</ul>`;
+            } else {
+                orderList.innerHTML = "No items added";
+            }
+            
             subtotalDisplay.textContent = subtotal.toFixed(2);
         }
 
@@ -286,53 +301,58 @@
 
         function saveAsFavorite() {
             if (Object.keys(order).length === 0) {
-                alert("Please add items to
-        const favoriteName = prompt("Enter a name for this favorite order:", "My Favorite Order");
-        if (!favoriteName) return;
-
-        const favoriteOrder = {
-            name: favoriteName,
-            items: { ...order },
-            discounts: {
-                discount50: document.getElementById("discount50").checked,
-                discount5: document.getElementById("discount5").checked
+                alert("Please add items to your order before saving as favorite");
+                return;
             }
-        };
 
-        favorites.push(favoriteOrder);
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-        updateFavorites();
-    }
+            const favoriteName = prompt("Enter a name for this favorite order:", "My Favorite Order");
+            if (!favoriteName) return;
 
-    function loadFavorite(index) {
-        const favorite = favorites[index];
-        order = { ...favorite.items };
-        document.getElementById("discount50").checked = favorite.discounts.discount50;
-        document.getElementById("discount5").checked = favorite.discounts.discount5;
-        updateOrderSummary();
-    }
+            const favoriteOrder = {
+                name: favoriteName,
+                items: { ...order },
+                discounts: {
+                    discount50: document.getElementById("discount50").checked,
+                    discount5: document.getElementById("discount5").checked
+                }
+            };
 
-    function deleteFavorite(index) {
-        favorites.splice(index, 1);
-        localStorage.setItem('favorites', JSON.stringify(favorites));
-        updateFavorites();
-    }
-
-    function updateFavorites() {
-        const favoritesList = document.getElementById("favorites-list");
-        if (favorites.length === 0) {
-            favoritesList.innerHTML = "No favorite orders saved";
-            return;
+            favorites.push(favoriteOrder);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateFavorites();
         }
 
-        favoritesList.innerHTML = favorites.map((favorite, index) => `
-            <div class="favorite-item">
-                <span>${favorite.name}</span>
-                <div>
-                    <button onclick="loadFavorite(${index})">Load</button>
-                    <button onclick="deleteFavorite(${index})">Delete</button>
+        function loadFavorite(index) {
+            const favorite = favorites[index];
+            order = JSON.parse(JSON.stringify(favorite.items)); // Deep clone to avoid reference issues
+            document.getElementById("discount50").checked = favorite.discounts.discount50;
+            document.getElementById("discount5").checked = favorite.discounts.discount5;
+            updateOrderSummary();
+        }
+
+        function deleteFavorite(index) {
+            favorites.splice(index, 1);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateFavorites();
+        }
+
+        function updateFavorites() {
+            const favoritesList = document.getElementById("favorites-list");
+            if (favorites.length === 0) {
+                favoritesList.innerHTML = "No favorite orders saved";
+                return;
+            }
+
+            favoritesList.innerHTML = favorites.map((favorite, index) => `
+                <div class="favorite-item">
+                    <span>${favorite.name}</span>
+                    <div>
+                        <button onclick="loadFavorite(${index})">Load</button>
+                        <button onclick="deleteFavorite(${index})">Delete</button>
+                    </div>
                 </div>
-            </div>
-        `).join('');
-    }
-</script>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
