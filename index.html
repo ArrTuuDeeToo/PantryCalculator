@@ -77,9 +77,7 @@ const OrderSummary = () => {
 
   return (
     <div className="flex max-w-6xl mx-auto gap-5 p-5 bg-black min-h-screen">
-      {/* Left Panel */}
       <div className="flex-[2] min-w-[400px] space-y-4">
-        {/* Item Menu */}
         <Card className="p-6 bg-zinc-300">
           <h3 className="text-xl font-bold text-center mb-4 pb-2 border-b border-zinc-400 text-black">Item Menu</h3>
           <div className="grid grid-cols-3 gap-3">
@@ -105,7 +103,6 @@ const OrderSummary = () => {
           </div>
         </Card>
 
-        {/* Favorites */}
         <Card className="p-6 bg-zinc-300">
           <h3 className="text-xl font-bold text-center mb-4 pb-2 border-b border-zinc-400 text-black">Favorite Orders</h3>
           <div className="space-y-3">
@@ -128,9 +125,7 @@ const OrderSummary = () => {
         </Card>
       </div>
 
-      {/* Right Panel */}
       <div className="flex-1 min-w-[300px] space-y-4">
-        {/* Discount Options */}
         <div className="bg-zinc-300 p-4 rounded-lg flex justify-center gap-4">
           <label className="flex items-center gap-2 text-black">
             <input
@@ -152,7 +147,6 @@ const OrderSummary = () => {
           </label>
         </div>
 
-        {/* Order Summary */}
         <Card className="p-6 bg-zinc-300">
           <h3 className="text-xl font-bold text-center mb-4 pb-2 border-b border-zinc-400 text-black">Order Summary</h3>
           <div className="space-y-4">
@@ -179,22 +173,4 @@ const OrderSummary = () => {
                   </span>
                 </div>
               )}
-              <div className="bg-zinc-200 p-3 rounded-lg flex justify-between items-center">
-                <span className="text-zinc-600">Total Amount:</span>
-                <span className="text-xl font-bold text-black">${calculateSubtotal()}</span>
-              </div>
-            </div>
-            <div className="flex justify-center gap-3 pt-2">
-              <button onClick={clearOrder}
-                className="px-4 py-2 bg-zinc-600 hover:bg-zinc-500 rounded text-white">Clear Order</button>
-              <button onClick={saveAsFavorite}
-                className="px-4 py-2 bg-zinc-600 hover:bg-zinc-500 rounded text-white">Save as Favorite</button>
-            </div>
-          </div>
-        </Card>
-      </div>
-    </div>
-  );
-};
-
-export default OrderSummary;
+              <div className="bg-zinc-200 p-3 rounded-lg
