@@ -1,38 +1,68 @@
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jewelry Menu Calculator</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jewelry Order</title>
+    <style>
+        /* Add basic styling */
+        .item { margin: 10px; }
+        .order-summary { margin-top: 20px; font-weight: bold; }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <div class="menu">
-      <h2>Jewelry Menu</h2>
-      <div class="items">
-        <div class="item">
-          <span>Opal T1 - $45</span>
-          <button onclick="addItem('Opal T1', 45)">Add</button>
-        </div>
-        <div class="item">
-          <span>Citrine T1 - $90</span>
-          <button onclick="addItem('Citrine T1', 90)">Add</button>
-        </div>
+    <div id="jewelry-menu">
+        <button class="item" onclick="addItem('Opal', 45)">Opal T1 - $45</button>
+        <button class="item" onclick="addItem('Opal', 120)">Opal T2 - $120</button>
+        <button class="item" onclick="addItem('Ruby', 70)">Ruby T1 - $70</button>
         <!-- Add more items as needed -->
-      </div>
-      <div class="discounts">
-        <input type="checkbox" id="discount50" onclick="applyDiscount(0.5)">
-        <label for="discount50">50% Discount</label><br>
-        <input type="checkbox" id="discount5" onclick="applyDiscount(0.05)">
-        <label for="discount5">5% Discount</label><br>
-      </div>
     </div>
-    <div class="summary">
-      <h2>Order Summary</h2>
-      <ul id="orderList"></ul>
-      <h3>Subtotal: $<span id="subtotal">0</span></h3>
+    <div id="order-summary" class="order-summary">
+        <h3>Order Summary:</h3>
+        <ul id="order-list"></ul>
+        <p>Subtotal: $<span id="subtotal">0</span></p>
     </div>
-  </div>
-  <script src="script.js"></script>
+
+    <script>
+        // Object to store items in the order
+        let order = {};
+
+        // Function to add item to the order
+        function addItem(name, price) {
+            if (order[name]) {
+                // If the item already exists, increase the quantity and update the total price
+                order[name].quantity += 1;
+                order[name].totalPrice += price;
+            } else {
+                // If it's a new item, add it to the order object
+                order[name] = { quantity: 1, totalPrice: price };
+            }
+            updateOrderSummary();
+        }
+
+        // Function to update the order summary display
+        function updateOrderSummary() {
+            const orderList = document.getElementById("order-list");
+            const subtotalDisplay = document.getElementById("subtotal");
+
+            // Clear the current order list
+            orderList.innerHTML = "";
+
+            let subtotal = 0;
+
+            // Loop through the order object and create a list item for each
+            for (let itemName in order) {
+                let item = order[itemName];
+                subtotal += item.totalPrice;
+
+                // Display format: Item x Quantity - Total Price
+                const listItem = document.createElement("li");
+                listItem.textContent = `${itemName} x${item.quantity} - $${item.totalPrice}`;
+                orderList.appendChild(listItem);
+            }
+
+            // Update the subtotal display
+            subtotalDisplay.textContent = subtotal.toFixed(2);
+        }
+    </script>
 </body>
 </html>
