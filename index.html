@@ -5,92 +5,160 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Item Order Summary</title>
     <style>
-        /* Dark mode styling */
         body {
             background-color: #2c2c2c;
             color: #ffffff;
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            padding: 20px;
+            min-height: 100vh;
         }
 
-        /* Container styling for center alignment */
         .container {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
             gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
-        /* Card-like style for each section */
         .card {
             background-color: #3a3a3a;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 300px;
         }
 
-        /* Heading styling */
         .card h3 {
             text-align: center;
             color: #f2f2f2;
             margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #4a4a4a;
         }
 
-        /* Item buttons styling */
+        .item-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 10px;
+        }
+
         .item {
-            display: flex;
-            justify-content: space-between;
+            background-color: #444;
+            padding: 12px;
+            border-radius: 6px;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
             align-items: center;
-            margin: 8px 0;
+            gap: 10px;
+        }
+
+        .item-icon {
+            font-size: 1.5rem;
+        }
+
+        .item-details {
+            display: flex;
+            flex-direction: column;
         }
 
         .item-name {
             font-size: 1rem;
             color: #ffffff;
-            margin-right: 10px;
         }
 
-        /* Quantity buttons */
+        .item-price {
+            font-size: 0.9rem;
+            color: #aaa;
+        }
+
+        .quantity-buttons {
+            display: flex;
+            gap: 5px;
+        }
+
         .quantity-buttons button {
-            background-color: #444;
+            background-color: #555;
             color: #ffffff;
             border: none;
             padding: 6px 8px;
-            margin-left: 5px;
             cursor: pointer;
             border-radius: 5px;
             transition: background-color 0.3s;
         }
 
         .quantity-buttons button:hover {
-            background-color: #555;
+            background-color: #666;
         }
 
-        /* Discount checkbox styling */
         .discount-options {
-            margin-top: 10px;
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #444;
+            border-radius: 6px;
         }
 
         .discount-options label {
             display: block;
-            font-size: 0.9rem;
-            margin-top: 5px;
+            padding: 5px 0;
         }
 
-        /* Order Summary styling */
-        #order-summary {
-            font-size: 1rem;
+        #order-list ul {
+            list-style: none;
+            padding: 0;
         }
 
-        /* Subtotal styling */
+        #order-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid #4a4a4a;
+        }
+
         .subtotal {
             font-weight: bold;
             margin-top: 15px;
-            text-align: center;
+            text-align: right;
+            padding: 10px;
+            background-color: #444;
+            border-radius: 6px;
+        }
+
+        .order-actions {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .order-actions button {
+            background-color: #555;
+            color: #ffffff;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        .order-actions button:hover {
+            background-color: #666;
+        }
+
+        .past-orders {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .past-order-item {
+            background-color: #444;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .past-order-date {
+            color: #aaa;
+            font-size: 0.9rem;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -99,129 +167,128 @@
         <!-- Item Menu -->
         <div class="card" id="item-menu">
             <h3>Item Menu</h3>
-            <div>
-                <!-- Items with quantity options -->
-                <div class="item">
-                    <span class="item-name">🐟 Bass Fish - $12</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Bass Fish', 12, 1)">+1</button>
-                        <button onclick="addItem('Bass Fish', 12, 10)">+10</button>
-                        <button onclick="addItem('Bass Fish', 12, 100)">+100</button>
+            <div class="item-grid">
+                <div>
+                        <span class="item-name">🐟 Bass Fish - $12</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Bass Fish', 12, 1)">+1</button>
+                            <button onclick="addItem('Bass Fish', 12, 10)">+10</button>
+                            <button onclick="addItem('Bass Fish', 12, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🥦 Peas - $3</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Peas', 3, 1)">+1</button>
+                            <button onclick="addItem('Peas', 3, 10)">+10</button>
+                            <button onclick="addItem('Peas', 3, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍞 Dough - $8</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Dough', 8, 1)">+1</button>
+                            <button onclick="addItem('Dough', 8, 10)">+10</button>
+                            <button onclick="addItem('Dough', 8, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍖 Meat - $20</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Meat', 20, 1)">+1</button>
+                            <button onclick="addItem('Meat', 20, 10)">+10</button>
+                            <button onclick="addItem('Meat', 20, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🥬 Lettuce - $2</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Lettuce', 2, 1)">+1</button>
+                            <button onclick="addItem('Lettuce', 2, 10)">+10</button>
+                            <button onclick="addItem('Lettuce', 2, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🐷 Pork - $15</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Pork', 15, 1)">+1</button>
+                            <button onclick="addItem('Pork', 15, 10)">+10</button>
+                            <button onclick="addItem('Pork', 15, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍔 Hamburger Bun - $1</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Hamburger Bun', 1, 1)">+1</button>
+                            <button onclick="addItem('Hamburger Bun', 1, 10)">+10</button>
+                            <button onclick="addItem('Hamburger Bun', 1, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍞 Bread - $4</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Bread', 4, 1)">+1</button>
+                            <button onclick="addItem('Bread', 4, 10)">+10</button>
+                            <button onclick="addItem('Bread', 4, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍬 Sugar - $2</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Sugar', 2, 1)">+1</button>
+                            <button onclick="addItem('Sugar', 2, 10)">+10</button>
+                            <button onclick="addItem('Sugar', 2, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍊 Orange - $1.5</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Orange', 1.5, 1)">+1</button>
+                            <button onclick="addItem('Orange', 1.5, 10)">+10</button>
+                            <button onclick="addItem('Orange', 1.5, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🥛 Milk - $1</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Milk', 1, 1)">+1</button>
+                            <button onclick="addItem('Milk', 1, 10)">+10</button>
+                            <button onclick="addItem('Milk', 1, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍰 Icing - $5</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Icing', 5, 1)">+1</button>
+                            <button onclick="addItem('Icing', 5, 10)">+10</button>
+                            <button onclick="addItem('Icing', 5, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍇 Raspberry - $3</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Raspberry', 3, 1)">+1</button>
+                            <button onclick="addItem('Raspberry', 3, 10)">+10</button>
+                            <button onclick="addItem('Raspberry', 3, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🥤 Plastic Cup - $0.5</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Plastic Cup', 0.5, 1)">+1</button>
+                            <button onclick="addItem('Plastic Cup', 0.5, 10)">+10</button>
+                            <button onclick="addItem('Plastic Cup', 0.5, 100)">+100</button>
+                        </div>
+                    </div>
+                    <div class="item">
+                        <span class="item-name">🍃 Tea Leaf - $4</span>
+                        <div class="quantity-buttons">
+                            <button onclick="addItem('Tea Leaf', 4, 1)">+1</button>
+                            <button onclick="addItem('Tea Leaf', 4, 10)">+10</button>
+                            <button onclick="addItem('Tea Leaf', 4, 100)">+100</button>
+                        </div>
                     </div>
                 </div>
-                <div class="item">
-                    <span class="item-name">🥦 Peas - $3</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Peas', 3, 1)">+1</button>
-                        <button onclick="addItem('Peas', 3, 10)">+10</button>
-                        <button onclick="addItem('Peas', 3, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍞 Dough - $8</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Dough', 8, 1)">+1</button>
-                        <button onclick="addItem('Dough', 8, 10)">+10</button>
-                        <button onclick="addItem('Dough', 8, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍖 Meat - $20</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Meat', 20, 1)">+1</button>
-                        <button onclick="addItem('Meat', 20, 10)">+10</button>
-                        <button onclick="addItem('Meat', 20, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🥬 Lettuce - $2</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Lettuce', 2, 1)">+1</button>
-                        <button onclick="addItem('Lettuce', 2, 10)">+10</button>
-                        <button onclick="addItem('Lettuce', 2, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🐷 Pork - $15</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Pork', 15, 1)">+1</button>
-                        <button onclick="addItem('Pork', 15, 10)">+10</button>
-                        <button onclick="addItem('Pork', 15, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍔 Hamburger Bun - $1</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Hamburger Bun', 1, 1)">+1</button>
-                        <button onclick="addItem('Hamburger Bun', 1, 10)">+10</button>
-                        <button onclick="addItem('Hamburger Bun', 1, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍞 Bread - $4</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Bread', 4, 1)">+1</button>
-                        <button onclick="addItem('Bread', 4, 10)">+10</button>
-                        <button onclick="addItem('Bread', 4, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍬 Sugar - $2</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Sugar', 2, 1)">+1</button>
-                        <button onclick="addItem('Sugar', 2, 10)">+10</button>
-                        <button onclick="addItem('Sugar', 2, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍊 Orange - $1.5</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Orange', 1.5, 1)">+1</button>
-                        <button onclick="addItem('Orange', 1.5, 10)">+10</button>
-                        <button onclick="addItem('Orange', 1.5, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🥛 Milk - $1</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Milk', 1, 1)">+1</button>
-                        <button onclick="addItem('Milk', 1, 10)">+10</button>
-                        <button onclick="addItem('Milk', 1, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍰 Icing - $5</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Icing', 5, 1)">+1</button>
-                        <button onclick="addItem('Icing', 5, 10)">+10</button>
-                        <button onclick="addItem('Icing', 5, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍇 Raspberry - $3</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Raspberry', 3, 1)">+1</button>
-                        <button onclick="addItem('Raspberry', 3, 10)">+10</button>
-                        <button onclick="addItem('Raspberry', 3, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🥤 Plastic Cup - $0.5</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Plastic Cup', 0.5, 1)">+1</button>
-                        <button onclick="addItem('Plastic Cup', 0.5, 10)">+10</button>
-                        <button onclick="addItem('Plastic Cup', 0.5, 100)">+100</button>
-                    </div>
-                </div>
-                <div class="item">
-                    <span class="item-name">🍃 Tea Leaf - $4</span>
-                    <div class="quantity-buttons">
-                        <button onclick="addItem('Tea Leaf', 4, 1)">+1</button>
-                        <button onclick="addItem('Tea Leaf', 4, 10)">+10</button>
-                        <button onclick="addItem('Tea Leaf', 4, 100)">+100</button>
-                    </div>
-                </div>
-            </div>
             <div class="discount-options">
                 <label><input type="checkbox" id="discount50" onchange="updateOrderSummary()"> 50% Discount</label>
                 <label><input type="checkbox" id="discount5" onchange="updateOrderSummary()"> 5% Discount</label>
@@ -233,11 +300,24 @@
             <h3>Order Summary</h3>
             <div id="order-list">No items added</div>
             <p class="subtotal">Subtotal: $<span id="subtotal">0.00</span></p>
+            <div class="order-actions">
+                <button onclick="clearOrder()">Clear Order</button>
+                <button onclick="placeOrder()">Place Order</button>
+            </div>
+        </div>
+
+        <!-- Past Orders -->
+        <div class="card" id="past-orders">
+            <h3>Past Orders</h3>
+            <div class="past-orders" id="past-orders-list">
+                No past orders
+            </div>
         </div>
     </div>
 
     <script>
         let order = {};
+        let pastOrders = [];
 
         function addItem(name, price, quantity) {
             if (order[name]) {
@@ -271,8 +351,57 @@
                 subtotal *= 0.95;
             }
 
-            orderList.innerHTML = `<ul>${orderSummaryText}</ul>`;
+            orderList.innerHTML = Object.keys(order).length ? `<ul>${orderSummaryText}</ul>` : "No items added";
             subtotalDisplay.textContent = subtotal.toFixed(2);
+        }
+
+        function clearOrder() {
+            order = {};
+            updateOrderSummary();
+            document.getElementById("discount50").checked = false;
+            document.getElementById("discount5").checked = false;
+        }
+
+        function placeOrder() {
+            if (Object.keys(order).length === 0) return;
+
+            const newOrder = {
+                items: {...order},
+                date: new Date().toLocaleString(),
+                total: parseFloat(document.getElementById("subtotal").textContent),
+                discounts: {
+                    discount50: document.getElementById("discount50").checked,
+                    discount5: document.getElementById("discount5").checked
+                }
+            };
+
+            pastOrders.unshift(newOrder);
+            updatePastOrders();
+            clearOrder();
+        }
+
+        function updatePastOrders() {
+            const pastOrdersList = document.getElementById("past-orders-list");
+            if (pastOrders.length === 0) {
+                pastOrdersList.innerHTML = "No past orders";
+                return;
+            }
+
+            pastOrdersList.innerHTML = pastOrders.map(order => `
+                <div class="past-order-item">
+                    <div class="past-order-date">${order.date}</div>
+                    <ul>
+                        ${Object.entries(order.items).map(([name, item]) => 
+                            `<li>${item.quantity}x ${name} - $${item.totalPrice.toFixed(2)}</li>`
+                        ).join('')}
+                    </ul>
+                    <div class="subtotal">
+                        ${order.discounts.discount50 ? '(50% Discount Applied) ' : 
+                          order.discounts.discount5 ? '(5% Discount Applied) ' : ''}
+                        Total: $${order.total.toFixed(2)}
+                    </div>
+                </div>
+            `).join('');
         }
     </script>
 </body>
