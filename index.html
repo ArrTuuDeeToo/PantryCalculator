@@ -21,14 +21,13 @@
             gap: 20px;
         }
 
-        /* Swap the widths here */
         .left-panel {
-            flex: 2; /* Wider than the right side */
+            flex: 2;
             min-width: 400px;
         }
 
         .right-panel {
-            flex: 1; /* Narrower than the left side */
+            flex: 1;
             min-width: 300px;
         }
 
@@ -37,7 +36,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 10px; /* Tiny gap between cards */
+            margin-bottom: 10px;
         }
 
         .card h3 {
@@ -64,7 +63,7 @@
             gap: 10px;
             flex: 1 1 45%;
             max-width: 400px;
-            margin-bottom: 5px; /* Tiny gap between items */
+            margin-bottom: 5px;
         }
 
         .item-name {
@@ -101,7 +100,7 @@
             border-radius: 6px;
             justify-content: center;
             align-items: center;
-            margin-bottom: 10px; /* Tiny gap above discount options */
+            margin-bottom: 10px;
         }
 
         .discount-options label {
@@ -158,9 +157,38 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
         }
 
-        .favorite-item button {
+        .favorite-name {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .favorite-name span {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .favorite-name input {
+            flex: 1;
+            background: #555;
+            border: 1px solid #666;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+        .favorite-actions {
+            display: flex;
+            gap: 5px;
+        }
+
+        .favorite-actions button {
             background-color: #555;
             color: #ffffff;
             border: none;
@@ -170,16 +198,23 @@
             transition: background-color 0.3s;
         }
 
-        .favorite-item button:hover {
+        .favorite-actions button:hover {
             background-color: #666;
+        }
+
+        .delete-button {
+            background-color: #873535 !important;
+        }
+
+        .delete-button:hover {
+            background-color: #a84242 !important;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Left Panel: Item Menu and Favorites -->
+        <!-- Left Panel: Item Menu -->
         <div class="left-panel">
-            <!-- Item Menu -->
             <div class="card" id="item-menu">
                 <h3>Item Menu</h3>
                 <div class="item-grid">
@@ -209,16 +244,16 @@
                     </div>
                 </div>
             </div>
+        </div>
 
+        <!-- Right Panel: Favorites, Discounts and Order Summary -->
+        <div class="right-panel">
             <!-- Favorites -->
             <div class="card" id="favorites">
                 <h3>Favorite Orders</h3>
                 <div id="favorites-list">No favorite orders saved</div>
             </div>
-        </div>
 
-        <!-- Right Panel: Discounts and Order Summary -->
-        <div class="right-panel">
             <!-- Discount Options -->
             <div class="discount-options">
                 <label><input type="checkbox" id="discount50" onchange="updateOrderSummary()"> 50% Discount</label>
@@ -241,6 +276,11 @@
     <script>
         let order = {};
         let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+        // Add names to existing favorites if they don't have them
+        favorites = favorites.map((fav, i) => ({
+            ...fav,
+            name: fav.name || `Favorite ${i + 1}`
+        }));
 
         updateFavorites();
 
@@ -287,7 +327,11 @@
 
         function saveAsFavorite() {
             if (Object.keys(order).length) {
-                favorites.push({ ...order });
+                const newFavorite = {
+                    ...order,
+                    name: `Favorite ${favorites.length + 1}`
+                };
+                favorites.push(newFavorite);
                 localStorage.setItem('favorites', JSON.stringify(favorites));
                 updateFavorites();
             }
@@ -299,20 +343,58 @@
                 favoritesList.innerHTML = "No favorite orders saved";
             } else {
                 favoritesList.innerHTML = favorites
-                    .map(
-                        (fav, i) => `
+                    .map((fav, i) => `
                         <div class="favorite-item">
-                            <span>Favorite ${i + 1}</span>
-                            <button onclick="loadFavorite(${i})">Load</button>
+                            <div class="favorite-name">
+                                <span onclick="startRename(${i})">${fav.name}</span>
+                            </div>
+                            <div class="favorite-actions">
+                                <button onclick="loadFavorite(${i})">Load</button>
+                                <button onclick="renameFavorite(${i})" class="rename-button">Rename</button>
+                                <button onclick="deleteFavorite(${i})" class="delete-button">Delete</button>
+                            </div>
                         </div>
-                    `
-                    )
+                    `)
                     .join("");
             }
         }
 
+        function startRename(index) {
+            const favoriteNameElement = document.querySelector(`#favorites-list .favorite-item:nth-child(${index + 1}) .favorite-name`);
+            const currentName = favorites[index].name;
+            favoriteNameElement.innerHTML = `
+                <input type="text" value="${currentName}" onblur="finishRename(${index}, this.value)" onkeypress="handleRenameKeyPress(event, ${index}, this)">
+            `;
+            favoriteNameElement.querySelector('input').focus();
+        }
+
+        function handleRenameKeyPress(event, index, input) {
+            if (event.key === 'Enter') {
+                finishRename(index, input.value);
+            }
+        }
+
+        function renameFavorite(index) {
+            startRename(index);
+        }
+
+        function finishRename(index, newName) {
+            if (newName.trim()) {
+                favorites[index].name = newName.trim();
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                updateFavorites();
+            }
+        }
+
+        function deleteFavorite(index) {
+            favorites.splice(index, 1);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            updateFavorites();
+        }
+
         function loadFavorite(index) {
             order = { ...favorites[index] };
+            delete order.name; // Remove the name property from the loaded order
             updateOrderSummary();
         }
     </script>
