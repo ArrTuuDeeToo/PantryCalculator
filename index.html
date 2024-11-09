@@ -30,7 +30,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 250px;
+            width: 300px;
         }
 
         /* Heading styling */
@@ -40,28 +40,37 @@
             margin-bottom: 15px;
         }
 
-        /* Button styling */
+        /* Item buttons styling */
         .item {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin: 8px 0;
+        }
+
+        .item-name {
+            font-size: 1rem;
+            color: #ffffff;
+            margin-right: 10px;
+        }
+
+        /* Quantity buttons */
+        .quantity-buttons button {
             background-color: #444;
             color: #ffffff;
             border: none;
-            padding: 8px;
-            margin: 8px 0;
-            font-size: 1rem;
+            padding: 6px 8px;
+            margin-left: 5px;
             cursor: pointer;
             border-radius: 5px;
-            width: 100%;
             transition: background-color 0.3s;
         }
 
-        .item:hover {
+        .quantity-buttons button:hover {
             background-color: #555;
         }
 
-        /* Checkbox styling */
+        /* Discount checkbox styling */
         .discount-options {
             margin-top: 10px;
         }
@@ -91,25 +100,37 @@
         <div class="card" id="jewelry-menu">
             <h3>Jewelry Menu</h3>
             <div>
-                <button class="item" onclick="addItem('Bass Fish', 12)">🐟 Bass Fish - $12</button>
-                <button class="item" onclick="addItem('Peas', 3)">🥦 Peas - $3</button>
-                <button class="item" onclick="addItem('Dough', 8)">🍞 Dough - $8</button>
-                <button class="item" onclick="addItem('Meat', 15)">🍖 Meat - $15</button>
-                <button class="item" onclick="addItem('Lettuce', 2)">🥬 Lettuce - $2</button>
-                <button class="item" onclick="addItem('Pork', 20)">🐷 Pork - $20</button>
-                <button class="item" onclick="addItem('Hamburger Bun', 1)">🍔 Hamburger Bun - $1</button>
-                <button class="item" onclick="addItem('Bread', 2)">🍞 Bread - $2</button>
-                <button class="item" onclick="addItem('Sugar', 5)">🍬 Sugar - $5</button>
-                <button class="item" onclick="addItem('Orange', 4)">🍊 Orange - $4</button>
-                <button class="item" onclick="addItem('Milk', 3)">🥛 Milk - $3</button>
-                <button class="item" onclick="addItem('Icing', 6)">🍰 Icing - $6</button>
-                <button class="item" onclick="addItem('Raspberry', 7)">🍇 Raspberry - $7</button>
-                <button class="item" onclick="addItem('Plastic Cup', 1)">🥤 Plastic Cup - $1</button>
-                <button class="item" onclick="addItem('Tea Leaf', 10)">🍵 Tea Leaf - $10</button>
+                <!-- Item with quantity options -->
+                <div class="item">
+                    <span class="item-name">🐟 Bass Fish - $12</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Bass Fish', 12, 1)">+1</button>
+                        <button onclick="addItem('Bass Fish', 12, 10)">+10</button>
+                        <button onclick="addItem('Bass Fish', 12, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🥦 Peas - $3</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Peas', 3, 1)">+1</button>
+                        <button onclick="addItem('Peas', 3, 10)">+10</button>
+                        <button onclick="addItem('Peas', 3, 100)">+100</button>
+                    </div>
+                </div>
+                <!-- Add more items with quantity options -->
+                <div class="item">
+                    <span class="item-name">🍞 Dough - $8</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Dough', 8, 1)">+1</button>
+                        <button onclick="addItem('Dough', 8, 10)">+10</button>
+                        <button onclick="addItem('Dough', 8, 100)">+100</button>
+                    </div>
+                </div>
+                <!-- Add more items as needed -->
             </div>
             <div class="discount-options">
-                <label><input type="checkbox"> 50% Discount</label>
-                <label><input type="checkbox"> 5% Discount</label>
+                <label><input type="checkbox" id="discount50" onchange="updateOrderSummary()"> 50% Discount</label>
+                <label><input type="checkbox" id="discount5" onchange="updateOrderSummary()"> 5% Discount</label>
             </div>
         </div>
 
@@ -125,15 +146,15 @@
         // Object to store items in the order
         let order = {};
 
-        // Function to add item to the order
-        function addItem(name, price) {
+        // Function to add item to the order with a specified quantity
+        function addItem(name, price, quantity) {
             if (order[name]) {
                 // If the item already exists, increase the quantity and update the total price
-                order[name].quantity += 1;
-                order[name].totalPrice += price;
+                order[name].quantity += quantity;
+                order[name].totalPrice += price * quantity;
             } else {
                 // If it's a new item, add it to the order object
-                order[name] = { quantity: 1, totalPrice: price };
+                order[name] = { quantity: quantity, totalPrice: price * quantity };
             }
             updateOrderSummary();
         }
@@ -142,6 +163,8 @@
         function updateOrderSummary() {
             const orderList = document.getElementById("order-list");
             const subtotalDisplay = document.getElementById("subtotal");
+            const discount50 = document.getElementById("discount50").checked;
+            const discount5 = document.getElementById("discount5").checked;
 
             // Clear the current order list
             orderList.innerHTML = "";
@@ -155,7 +178,14 @@
                 subtotal += item.totalPrice;
 
                 // Format as "Quantity x Item Name"
-                orderSummaryText += `<li>${item.quantity}x ${itemName} - $${item.totalPrice}</li>`;
+                orderSummaryText += `<li>${item.quantity}x ${itemName} - $${item.totalPrice.toFixed(2)}</li>`;
+            }
+
+            // Apply discount
+            if (discount50) {
+                subtotal *= 0.5;
+            } else if (discount5) {
+                subtotal *= 0.95;
             }
 
             // Update the subtotal and display the formatted order summary
