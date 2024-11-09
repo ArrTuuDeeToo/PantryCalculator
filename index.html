@@ -4,7 +4,8 @@ import { Card } from '@/components/ui/card';
 const OrderSummary = () => {
   const [order, setOrder] = useState({});
   const [favorites, setFavorites] = useState([]);
-  const [discount, setDiscount] = useState(null); // Use a single state for discounts
+  const [discount50, setDiscount50] = useState(false);
+  const [discount5, setDiscount5] = useState(false);
 
   useEffect(() => {
     const savedFavorites = JSON.parse(localStorage.getItem('favorites')) || [];
@@ -29,7 +30,6 @@ const OrderSummary = () => {
 
   const clearOrder = () => {
     setOrder({});
-    setDiscount(null); // Clear discount when the order is cleared
   };
 
   const saveAsFavorite = () => {
@@ -44,7 +44,10 @@ const OrderSummary = () => {
     const favoriteOrder = {
       name: favoriteName,
       items: { ...order },
-      discount
+      discounts: {
+        discount50,
+        discount5
+      }
     };
 
     const updatedFavorites = [...favorites, favoriteOrder];
@@ -55,7 +58,8 @@ const OrderSummary = () => {
   const loadFavorite = (index) => {
     const favorite = favorites[index];
     setOrder(JSON.parse(JSON.stringify(favorite.items)));
-    setDiscount(favorite.discount);
+    setDiscount50(favorite.discounts.discount50);
+    setDiscount5(favorite.discounts.discount5);
   };
 
   const deleteFavorite = (index) => {
@@ -66,20 +70,16 @@ const OrderSummary = () => {
 
   const calculateSubtotal = () => {
     let subtotal = Object.values(order).reduce((sum, item) => sum + item.totalPrice, 0);
-    if (discount === '50') subtotal *= 0.5;
-    else if (discount === '5') subtotal *= 0.95;
+    if (discount50) subtotal *= 0.5;
+    else if (discount5) subtotal *= 0.95;
     return subtotal.toFixed(2);
-  };
-
-  const handleDiscountChange = (type) => {
-    setDiscount(prev => (prev === type ? null : type)); // Toggle discount
   };
 
   return (
     <div className="flex max-w-6xl mx-auto gap-5 p-5 bg-black min-h-screen">
-      {/*Left Panel*/}
+      {/* Left Panel */}
       <div className="flex-[2] min-w-[400px] space-y-4">
-        {/*Item Menu*/}
+        {/* Item Menu */}
         <Card className="p-6 bg-zinc-300">
           <h3 className="text-xl font-bold text-center mb-4 pb-2 border-b border-zinc-400 text-black">Item Menu</h3>
           <div className="grid grid-cols-3 gap-3">
@@ -87,6 +87,7 @@ const OrderSummary = () => {
               { name: 'Bass Fish', price: 12, emoji: '🐟' },
               { name: 'Shrimp', price: 8, emoji: '🦐' },
               { name: 'Crab', price: 15, emoji: '🦀' }
+              { name: 'Meat', price: 20, emoji: '🍖' }
             ].map(item => (
               <div key={item.name} className="bg-zinc-200 p-2 rounded-lg flex flex-col items-center">
                 <div className="text-center mb-1">
@@ -105,7 +106,7 @@ const OrderSummary = () => {
           </div>
         </Card>
 
-        {/*Favorites*/}
+        {/* Favorites */}
         <Card className="p-6 bg-zinc-300">
           <h3 className="text-xl font-bold text-center mb-4 pb-2 border-b border-zinc-400 text-black">Favorite Orders</h3>
           <div className="space-y-3">
@@ -128,15 +129,15 @@ const OrderSummary = () => {
         </Card>
       </div>
 
-      {/*Right Panel*/}
+      {/* Right Panel */}
       <div className="flex-1 min-w-[300px] space-y-4">
-        {/*Discount Options*/}
+        {/* Discount Options */}
         <div className="bg-zinc-300 p-4 rounded-lg flex justify-center gap-4">
           <label className="flex items-center gap-2 text-black">
             <input
               type="checkbox"
-              checked={discount === '50'}
-              onChange={() => handleDiscountChange('50')}
+              checked={discount50}
+              onChange={(e) => setDiscount50(e.target.checked)}
               className="form-checkbox"
             />
             50% Discount
@@ -144,15 +145,15 @@ const OrderSummary = () => {
           <label className="flex items-center gap-2 text-black">
             <input
               type="checkbox"
-              checked={discount === '5'}
-              onChange={() => handleDiscountChange('5')}
+              checked={discount5}
+              onChange={(e) => setDiscount5(e.target.checked)}
               className="form-checkbox"
             />
             5% Discount
           </label>
         </div>
 
-        {/*Order Summary*/}
+        {/* Order Summary */}
         <Card className="p-6 bg-zinc-300">
           <h3 className="text-xl font-bold text-center mb-4 pb-2 border-b border-zinc-400 text-black">Order Summary</h3>
           <div className="space-y-4">
@@ -172,10 +173,10 @@ const OrderSummary = () => {
               </ul>
             )}
             <div className="mt-4 space-y-2">
-              {discount && (
+              {(discount50 || discount5) && (
                 <div className="bg-zinc-200 p-2 rounded text-right text-sm">
                   <span className="text-zinc-600">
-                    Discount applied: {discount === '50' ? '50%' : '5%'}
+                    Discount applied: {discount50 ? '50%' : '5%'}
                   </span>
                 </div>
               )}
