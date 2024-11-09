@@ -21,20 +21,15 @@
             gap: 20px;
         }
 
-        .left-panel, .right-panel {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
+        /* Swap the widths here */
         .left-panel {
-            flex: 1;
-            min-width: 300px;
+            flex: 2; /* Wider than the right side */
+            min-width: 400px;
         }
 
         .right-panel {
-            flex: 2;
-            min-width: 400px;
+            flex: 1; /* Narrower than the left side */
+            min-width: 300px;
         }
 
         .card {
