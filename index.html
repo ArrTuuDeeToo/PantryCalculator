@@ -37,6 +37,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            margin-bottom: 10px; /* Tiny gap between cards */
         }
 
         .card h3 {
@@ -63,6 +64,7 @@
             gap: 10px;
             flex: 1 1 45%;
             max-width: 400px;
+            margin-bottom: 5px; /* Tiny gap between items */
         }
 
         .item-name {
@@ -99,6 +101,7 @@
             border-radius: 6px;
             justify-content: center;
             align-items: center;
+            margin-bottom: 10px; /* Tiny gap above discount options */
         }
 
         .discount-options label {
@@ -236,7 +239,82 @@
     </div>
 
     <script>
-        // JavaScript code remains the same
+        let order = {};
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+
+        updateFavorites();
+
+        function addItem(name, price, quantity) {
+            if (order[name]) {
+                order[name].quantity += quantity;
+                order[name].totalPrice += price * quantity;
+            } else {
+                order[name] = { quantity: quantity, totalPrice: price * quantity, price: price };
+            }
+            updateOrderSummary();
+        }
+
+        function updateOrderSummary() {
+            const orderList = document.getElementById("order-list");
+            const subtotalDisplay = document.getElementById("subtotal");
+            const discount50 = document.getElementById("discount50").checked;
+            const discount5 = document.getElementById("discount5").checked;
+
+            orderList.innerHTML = "";
+            let subtotal = 0;
+            let orderSummaryText = "";
+
+            for (let itemName in order) {
+                let item = order[itemName];
+                subtotal += item.totalPrice;
+                orderSummaryText += `<li>${item.quantity}x ${itemName} - $${item.totalPrice.toFixed(2)}</li>`;
+            }
+
+            if (discount50) {
+                subtotal *= 0.5;
+            } else if (discount5) {
+                subtotal *= 0.95;
+            }
+
+            orderList.innerHTML = Object.keys(order).length ? `<ul>${orderSummaryText}</ul>` : "No items added";
+            subtotalDisplay.textContent = subtotal.toFixed(2);
+        }
+
+        function clearOrder() {
+            order = {};
+            updateOrderSummary();
+        }
+
+        function saveAsFavorite() {
+            if (Object.keys(order).length) {
+                favorites.push({ ...order });
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                updateFavorites();
+            }
+        }
+
+        function updateFavorites() {
+            const favoritesList = document.getElementById("favorites-list");
+            if (!favorites.length) {
+                favoritesList.innerHTML = "No favorite orders saved";
+            } else {
+                favoritesList.innerHTML = favorites
+                    .map(
+                        (fav, i) => `
+                        <div class="favorite-item">
+                            <span>Favorite ${i + 1}</span>
+                            <button onclick="loadFavorite(${i})">Load</button>
+                        </div>
+                    `
+                    )
+                    .join("");
+            }
+        }
+
+        function loadFavorite(index) {
+            order = { ...favorites[index] };
+            updateOrderSummary();
+        }
     </script>
 </body>
 </html>
