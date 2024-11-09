@@ -15,10 +15,10 @@
         }
 
         .container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            display: flex;
+            flex-direction: column;
             gap: 20px;
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
@@ -38,24 +38,28 @@
         }
 
         .item-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
             gap: 10px;
+            justify-content: flex-start;
         }
 
         .item {
             background-color: #444;
             padding: 12px;
             border-radius: 6px;
-            display: grid;
-            grid-template-columns: auto 1fr auto;
+            display: flex;
             align-items: center;
             gap: 10px;
+            flex: 1 1 300px;
+            max-width: 400px;
         }
 
         .item-name {
             font-size: 1rem;
             color: #ffffff;
+            flex: 1;
+            white-space: nowrap;
         }
 
         .quantity-buttons {
@@ -75,6 +79,12 @@
 
         .quantity-buttons button:hover {
             background-color: #666;
+        }
+
+        .summary-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
         }
 
         .discount-options {
@@ -160,128 +170,31 @@
         <div class="card" id="item-menu">
             <h3>Item Menu</h3>
             <div class="item-grid">
-                <div>
-                    <!-- Items with quantity options -->
-                    <div class="item">
-                        <span class="item-name">🐟 Bass Fish - $12</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Bass Fish', 12, 1)">+1</button>
-                            <button onclick="addItem('Bass Fish', 12, 10)">+10</button>
-                            <button onclick="addItem('Bass Fish', 12, 100)">+100</button>
-                        </div>
+                <div class="item">
+                    <span class="item-name">🐟 Bass Fish - $12</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Bass Fish', 12, 1)">+1</button>
+                        <button onclick="addItem('Bass Fish', 12, 10)">+10</button>
+                        <button onclick="addItem('Bass Fish', 12, 100)">+100</button>
                     </div>
-                    <div class="item">
-                        <span class="item-name">🥦 Peas - $3</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Peas', 3, 1)">+1</button>
-                            <button onclick="addItem('Peas', 3, 10)">+10</button>
-                            <button onclick="addItem('Peas', 3, 100)">+100</button>
-                        </div>
+                </div>
+                <!-- Add more items here to see them stretch across -->
+                <div class="item">
+                    <span class="item-name">🦐 Shrimp - $8</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Shrimp', 8, 1)">+1</button>
+                        <button onclick="addItem('Shrimp', 8, 10)">+10</button>
+                        <button onclick="addItem('Shrimp', 8, 100)">+100</button>
                     </div>
-                    <div class="item">
-                        <span class="item-name">🍞 Dough - $8</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Dough', 8, 1)">+1</button>
-                            <button onclick="addItem('Dough', 8, 10)">+10</button>
-                            <button onclick="addItem('Dough', 8, 100)">+100</button>
-                        </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🦀 Crab - $15</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Crab', 15, 1)">+1</button>
+                        <button onclick="addItem('Crab', 15, 10)">+10</button>
+                        <button onclick="addItem('Crab', 15, 100)">+100</button>
                     </div>
-                    <div class="item">
-                        <span class="item-name">🍖 Meat - $20</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Meat', 20, 1)">+1</button>
-                            <button onclick="addItem('Meat', 20, 10)">+10</button>
-                            <button onclick="addItem('Meat', 20, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🥬 Lettuce - $2</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Lettuce', 2, 1)">+1</button>
-                            <button onclick="addItem('Lettuce', 2, 10)">+10</button>
-                            <button onclick="addItem('Lettuce', 2, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🐷 Pork - $15</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Pork', 15, 1)">+1</button>
-                            <button onclick="addItem('Pork', 15, 10)">+10</button>
-                            <button onclick="addItem('Pork', 15, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🍔 Hamburger Bun - $1</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Hamburger Bun', 1, 1)">+1</button>
-                            <button onclick="addItem('Hamburger Bun', 1, 10)">+10</button>
-                            <button onclick="addItem('Hamburger Bun', 1, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🍞 Bread - $4</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Bread', 4, 1)">+1</button>
-                            <button onclick="addItem('Bread', 4, 10)">+10</button>
-                            <button onclick="addItem('Bread', 4, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🍬 Sugar - $2</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Sugar', 2, 1)">+1</button>
-                            <button onclick="addItem('Sugar', 2, 10)">+10</button>
-                            <button onclick="addItem('Sugar', 2, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🍊 Orange - $1.5</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Orange', 1.5, 1)">+1</button>
-                            <button onclick="addItem('Orange', 1.5, 10)">+10</button>
-                            <button onclick="addItem('Orange', 1.5, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🥛 Milk - $1</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Milk', 1, 1)">+1</button>
-                            <button onclick="addItem('Milk', 1, 10)">+10</button>
-                            <button onclick="addItem('Milk', 1, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🍰 Icing - $5</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Icing', 5, 1)">+1</button>
-                            <button onclick="addItem('Icing', 5, 10)">+10</button>
-                            <button onclick="addItem('Icing', 5, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🍇 Raspberry - $3</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Raspberry', 3, 1)">+1</button>
-                            <button onclick="addItem('Raspberry', 3, 10)">+10</button>
-                            <button onclick="addItem('Raspberry', 3, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🥤 Plastic Cup - $0.5</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Plastic Cup', 0.5, 1)">+1</button>
-                            <button onclick="addItem('Plastic Cup', 0.5, 10)">+10</button>
-                            <button onclick="addItem('Plastic Cup', 0.5, 100)">+100</button>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <span class="item-name">🍃 Tea Leaf - $4</span>
-                        <div class="quantity-buttons">
-                            <button onclick="addItem('Tea Leaf', 4, 1)">+1</button>
-                            <button onclick="addItem('Tea Leaf', 4, 10)">+10</button>
-                            <button onclick="addItem('Tea Leaf', 4, 100)">+100</button>
-                        </div>
-                    </div>
+                </div>
             </div>
             <div class="discount-options">
                 <label><input type="checkbox" id="discount50" onchange="updateOrderSummary()"> 50% Discount</label>
@@ -289,30 +202,30 @@
             </div>
         </div>
 
-        <!-- Order Summary -->
-        <div class="card" id="order-summary">
-            <h3>Order Summary</h3>
-            <div id="order-list">No items added</div>
-            <p class="subtotal">Subtotal: $<span id="subtotal">0.00</span></p>
-            <div class="order-actions">
-                <button onclick="clearOrder()">Clear Order</button>
-                <button onclick="saveAsFavorite()">Save as Favorite</button>
+        <div class="summary-container">
+            <!-- Order Summary -->
+            <div class="card" id="order-summary">
+                <h3>Order Summary</h3>
+                <div id="order-list">No items added</div>
+                <p class="subtotal">Subtotal: $<span id="subtotal">0.00</span></p>
+                <div class="order-actions">
+                    <button onclick="clearOrder()">Clear Order</button>
+                    <button onclick="saveAsFavorite()">Save as Favorite</button>
+                </div>
             </div>
-        </div>
 
-        <!-- Favorites -->
-        <div class="card" id="favorites">
-            <h3>Favorite Orders</h3>
-            <div id="favorites-list">No favorite orders saved</div>
+            <!-- Favorites -->
+            <div class="card" id="favorites">
+                <h3>Favorite Orders</h3>
+                <div id="favorites-list">No favorite orders saved</div>
+            </div>
         </div>
     </div>
 
     <script>
         let order = {};
-        // Load favorites from localStorage on page load
         let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
         
-        // Initial update of favorites display
         updateFavorites();
 
         function addItem(name, price, quantity) {
@@ -381,7 +294,6 @@
             };
 
             favorites.push(favoriteOrder);
-            // Save to localStorage
             localStorage.setItem('favorites', JSON.stringify(favorites));
             updateFavorites();
         }
@@ -396,7 +308,6 @@
 
         function deleteFavorite(index) {
             favorites.splice(index, 1);
-            // Update localStorage after deletion
             localStorage.setItem('favorites', JSON.stringify(favorites));
             updateFavorites();
         }
