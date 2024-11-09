@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jewelry Order</title>
+    <title>Item Order Summary</title>
     <style>
         /* Dark mode styling */
         body {
@@ -96,11 +96,11 @@
 </head>
 <body>
     <div class="container">
-        <!-- Jewelry Menu -->
-        <div class="card" id="jewelry-menu">
-            <h3>Jewelry Menu</h3>
+        <!-- Item Menu -->
+        <div class="card" id="item-menu">
+            <h3>Item Menu</h3>
             <div>
-                <!-- Item with quantity options -->
+                <!-- Items with quantity options -->
                 <div class="item">
                     <span class="item-name">🐟 Bass Fish - $12</span>
                     <div class="quantity-buttons">
@@ -117,7 +117,6 @@
                         <button onclick="addItem('Peas', 3, 100)">+100</button>
                     </div>
                 </div>
-                <!-- Add more items with quantity options -->
                 <div class="item">
                     <span class="item-name">🍞 Dough - $8</span>
                     <div class="quantity-buttons">
@@ -126,7 +125,102 @@
                         <button onclick="addItem('Dough', 8, 100)">+100</button>
                     </div>
                 </div>
-                <!-- Add more items as needed -->
+                <div class="item">
+                    <span class="item-name">🍖 Meat - $20</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Meat', 20, 1)">+1</button>
+                        <button onclick="addItem('Meat', 20, 10)">+10</button>
+                        <button onclick="addItem('Meat', 20, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🥬 Lettuce - $2</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Lettuce', 2, 1)">+1</button>
+                        <button onclick="addItem('Lettuce', 2, 10)">+10</button>
+                        <button onclick="addItem('Lettuce', 2, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🐷 Pork - $15</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Pork', 15, 1)">+1</button>
+                        <button onclick="addItem('Pork', 15, 10)">+10</button>
+                        <button onclick="addItem('Pork', 15, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🍔 Hamburger Bun - $1</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Hamburger Bun', 1, 1)">+1</button>
+                        <button onclick="addItem('Hamburger Bun', 1, 10)">+10</button>
+                        <button onclick="addItem('Hamburger Bun', 1, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🍞 Bread - $4</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Bread', 4, 1)">+1</button>
+                        <button onclick="addItem('Bread', 4, 10)">+10</button>
+                        <button onclick="addItem('Bread', 4, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🍬 Sugar - $2</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Sugar', 2, 1)">+1</button>
+                        <button onclick="addItem('Sugar', 2, 10)">+10</button>
+                        <button onclick="addItem('Sugar', 2, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🍊 Orange - $1.5</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Orange', 1.5, 1)">+1</button>
+                        <button onclick="addItem('Orange', 1.5, 10)">+10</button>
+                        <button onclick="addItem('Orange', 1.5, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🥛 Milk - $1</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Milk', 1, 1)">+1</button>
+                        <button onclick="addItem('Milk', 1, 10)">+10</button>
+                        <button onclick="addItem('Milk', 1, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🍰 Icing - $5</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Icing', 5, 1)">+1</button>
+                        <button onclick="addItem('Icing', 5, 10)">+10</button>
+                        <button onclick="addItem('Icing', 5, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🍇 Raspberry - $3</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Raspberry', 3, 1)">+1</button>
+                        <button onclick="addItem('Raspberry', 3, 10)">+10</button>
+                        <button onclick="addItem('Raspberry', 3, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🥤 Plastic Cup - $0.5</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Plastic Cup', 0.5, 1)">+1</button>
+                        <button onclick="addItem('Plastic Cup', 0.5, 10)">+10</button>
+                        <button onclick="addItem('Plastic Cup', 0.5, 100)">+100</button>
+                    </div>
+                </div>
+                <div class="item">
+                    <span class="item-name">🍃 Tea Leaf - $4</span>
+                    <div class="quantity-buttons">
+                        <button onclick="addItem('Tea Leaf', 4, 1)">+1</button>
+                        <button onclick="addItem('Tea Leaf', 4, 10)">+10</button>
+                        <button onclick="addItem('Tea Leaf', 4, 100)">+100</button>
+                    </div>
+                </div>
             </div>
             <div class="discount-options">
                 <label><input type="checkbox" id="discount50" onchange="updateOrderSummary()"> 50% Discount</label>
@@ -143,52 +237,40 @@
     </div>
 
     <script>
-        // Object to store items in the order
         let order = {};
 
-        // Function to add item to the order with a specified quantity
         function addItem(name, price, quantity) {
             if (order[name]) {
-                // If the item already exists, increase the quantity and update the total price
                 order[name].quantity += quantity;
                 order[name].totalPrice += price * quantity;
             } else {
-                // If it's a new item, add it to the order object
                 order[name] = { quantity: quantity, totalPrice: price * quantity };
             }
             updateOrderSummary();
         }
 
-        // Function to update the order summary display
         function updateOrderSummary() {
             const orderList = document.getElementById("order-list");
             const subtotalDisplay = document.getElementById("subtotal");
             const discount50 = document.getElementById("discount50").checked;
             const discount5 = document.getElementById("discount5").checked;
 
-            // Clear the current order list
             orderList.innerHTML = "";
-
             let subtotal = 0;
             let orderSummaryText = "";
 
-            // Loop through the order object and create a summary line for each item
             for (let itemName in order) {
                 let item = order[itemName];
                 subtotal += item.totalPrice;
-
-                // Format as "Quantity x Item Name"
                 orderSummaryText += `<li>${item.quantity}x ${itemName} - $${item.totalPrice.toFixed(2)}</li>`;
             }
 
-            // Apply discount
             if (discount50) {
                 subtotal *= 0.5;
             } else if (discount5) {
                 subtotal *= 0.95;
             }
 
-            // Update the subtotal and display the formatted order summary
             orderList.innerHTML = `<ul>${orderSummaryText}</ul>`;
             subtotalDisplay.textContent = subtotal.toFixed(2);
         }
