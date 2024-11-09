@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,15 +12,19 @@
 </head>
 <body>
     <div id="jewelry-menu">
-        <button class="item" onclick="addItem('Opal', 45)">Opal T1 - $45</button>
-        <button class="item" onclick="addItem('Opal', 120)">Opal T2 - $120</button>
-        <button class="item" onclick="addItem('Ruby', 70)">Ruby T1 - $70</button>
+        <button class="item" onclick="addItem('Opal T1', 45)">Opal T1 - $45</button>
+        <button class="item" onclick="addItem('Opal T2', 120)">Opal T2 - $120</button>
+        <button class="item" onclick="addItem('Opal T3', 220)">Opal T3 - $220</button>
+        <button class="item" onclick="addItem('Citrine T1', 90)">Citrine T1 - $90</button>
+        <button class="item" onclick="addItem('Amethyst T3', 180)">Amethyst T3 - $180</button>
+        <button class="item" onclick="addItem('Sapphire T3', 270)">Sapphire T3 - $270</button>
+        <button class="item" onclick="addItem('Ruby T3', 540)">Ruby T3 - $540</button>
         <!-- Add more items as needed -->
     </div>
     <div id="order-summary" class="order-summary">
         <h3>Order Summary:</h3>
-        <ul id="order-list"></ul>
-        <p>Subtotal: $<span id="subtotal">0</span></p>
+        <div id="order-list"></div>
+        <p>SUBTOTAL: $<span id="subtotal">0</span></p>
     </div>
 
     <script>
@@ -48,19 +53,19 @@
             orderList.innerHTML = "";
 
             let subtotal = 0;
+            let orderSummaryText = "ITEMS ORDERED:<br>";
 
-            // Loop through the order object and create a list item for each
+            // Loop through the order object and create a summary line for each item
             for (let itemName in order) {
                 let item = order[itemName];
                 subtotal += item.totalPrice;
 
-                // Display format: Item x Quantity - Total Price
-                const listItem = document.createElement("li");
-                listItem.textContent = `${itemName} x${item.quantity} - $${item.totalPrice}`;
-                orderList.appendChild(listItem);
+                // Format as "Quantity x Item Name"
+                orderSummaryText += `- ${item.quantity}x ${itemName}<br>`;
             }
 
-            // Update the subtotal display
+            // Update the subtotal and display the formatted order summary
+            orderList.innerHTML = orderSummaryText;
             subtotalDisplay.textContent = subtotal.toFixed(2);
         }
     </script>
