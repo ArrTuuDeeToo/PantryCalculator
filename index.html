@@ -511,16 +511,30 @@
             updateOrderSummary();
         }
        
-    function completeOrder() {
+   function completeOrder() {
     const orderSummary = document.getElementById("order-list");
     const orderName = document.getElementById("order-name").value;
     const subtotal = document.getElementById("subtotal").textContent;
 
     const orderSummaryText = orderSummary.innerHTML.replace(/<ul>/g, '').replace(/<\/ul>/g, '').replace(/<li>/g, '* ').replace(/<\/li>/g, '\n');
 
+    const embed = {
+        "title": "Order Summary",
+        "description": `${orderName}\n\n${orderSummaryText}`,
+        "fields": [
+            {
+                "name": "Subtotal",
+                "value": `$${subtotal}`,
+                "inline": true
+            }
+        ],
+        "color": 0x0099ff
+    };
+
     const orderData = {
-        "content": `**Order Summary**\n${orderName}\n\n${orderSummaryText}\n\n**Subtotal:** $${subtotal}`,
-        "username": "Order Bot",
+        "content": "",
+        "embeds": [embed],
+        "username": "Pantry",
         "avatar_url": "https://example.com/avatar.png"
     };
 
@@ -531,13 +545,12 @@
         },
         body: JSON.stringify(orderData)
     })
- .then(response => response.json())
- .then(data => console.log(data))
- .catch(error => console.error(error));
+.then(response => response.json())
+.then(data => console.log(data))
+.catch(error => console.error(error));
 
     clearOrder();
 }
-
     </script>
 </body>
 </html>
